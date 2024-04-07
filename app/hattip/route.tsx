@@ -12,9 +12,9 @@ export async function GET(request: Request) {
 
     console.log('url ' + request.url)
 
-    let alreadyTippedToday = searchParams.get('amp;alreadyTippedToday')
+    let alreadyTippedToday = searchParams.get('alreadyTippedToday')
     if (!alreadyTippedToday) {
-        alreadyTippedToday = searchParams.get('alreadyTippedToday')
+        alreadyTippedToday = searchParams.get('amp;alreadyTippedToday')
     }
     console.log('alreadytipped: ' + alreadyTippedToday)
 
