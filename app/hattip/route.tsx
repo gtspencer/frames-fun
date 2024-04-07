@@ -12,11 +12,11 @@ export async function GET(request: Request) {
 
     console.log('url ' + request.url)
 
-    let alreadyTippedToday = searchParams.get('alreadyTippedToday')
-    if (!alreadyTippedToday) {
-        alreadyTippedToday = searchParams.get('amp;alreadyTippedToday')
-    }
-    console.log('alreadytipped: ' + alreadyTippedToday)
+    let alreadyTippedToday = searchParams.toString().includes('true')
+    // if (!alreadyTippedToday) {
+    //     alreadyTippedToday = searchParams.get('amp;alreadyTippedToday')
+    // }
+    // console.log('alreadytipped: ' + alreadyTippedToday)
 
     const imageData = await fetch(
         new URL('./hat_logo_text.jpg', import.meta.url)
@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     if (tips == "1") {
         responseMessage = "Your first hat tip!  Come back tomorrow for more."
     } else {
-        if (alreadyTippedToday == "true" || alreadyTippedToday === "true") {
+        if (alreadyTippedToday) {
             responseMessage = `You have already tipped your hat today.\nTotal hat tips: ${tips}\nCome back tomorrow for more`
         } else {
             responseMessage = `Hat tipped!\nTotal hat tips: ${tips}\nCome back tomorrow for more`
