@@ -3,6 +3,7 @@
 import { Button, Frog, TextInput } from 'frog'
 import { devtools } from 'frog/dev'
 // import { neynar } from 'frog/hubs'
+import { pinata } from 'frog/hubs'
 import { handle } from 'frog/next'
 import { serveStatic } from 'frog/serve-static'
 
@@ -11,23 +12,45 @@ const app = new Frog({
   basePath: '/api',
   // Supply a Hub to enable frame verification.
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
+  hub: pinata()
 })
 
 // Uncomment to use Edge Runtime
 // export const runtime = 'edge'
 
 app.frame('/', (c) => {
-  const { buttonValue, inputText, status } = c
-  const fruit = inputText || buttonValue
+  return c.res({
+    action: '/hattip',
+    image: `/images/hat_logo.jpg`,
+    imageAspectRatio: "1:1",
+    intents: [
+      <Button>Tip your hat</Button>,
+    ],
+  })
+})
+
+app.frame('/hattip', (c) => {
+  const { verified, frameData } = c
+
+  if (!verified) {
+    return ReturnUnverified(c)
+  }
+
+  const { fid } = frameData || {}
+  console.log(fid)
+  console.log(frameData)
+  return c.res({
+    image: `/images/banner.jpg`,
+  })
+})
+
+function ReturnUnverified(c: any) {
   return c.res({
     image: (
       <div
         style={{
           alignItems: 'center',
-          background:
-            status === 'response'
-              ? 'linear-gradient(to right, #432889, #17101F)'
-              : 'black',
+          background: 'black',
           backgroundSize: '100% 100%',
           display: 'flex',
           flexDirection: 'column',
@@ -49,22 +72,12 @@ app.frame('/', (c) => {
             padding: '0 120px',
             whiteSpace: 'pre-wrap',
           }}
-        >
-          {status === 'response'
-            ? `Nice choice.${fruit ? ` ${fruit.toUpperCase()}!!` : ''}`
-            : 'Welcome!'}
+        > Please login to Farcaster!
         </div>
       </div>
     ),
-    intents: [
-      <TextInput placeholder="Enter custom fruit..." />,
-      <Button value="apples">Apples</Button>,
-      <Button value="oranges">Oranges</Button>,
-      <Button value="bananas">Bananas</Button>,
-      status === 'response' && <Button.Reset>Reset</Button.Reset>,
-    ],
   })
-})
+}
 
 devtools(app, { serveStatic })
 
