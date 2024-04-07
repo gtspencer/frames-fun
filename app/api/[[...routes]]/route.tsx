@@ -1,14 +1,20 @@
-import { serveStatic } from '@hono/node-server/serve-static'
+/** @jsxImportSource frog/jsx */
+
 import { Button, Frog, TextInput } from 'frog'
 import { devtools } from 'frog/dev'
 // import { neynar } from 'frog/hubs'
+import { handle } from 'frog/next'
+import { serveStatic } from 'frog/serve-static'
 
-export const app = new Frog({
+const app = new Frog({
+  assetsPath: '/',
+  basePath: '/api',
   // Supply a Hub to enable frame verification.
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
 })
 
-app.use('/*', serveStatic({ root: './public' }))
+// Uncomment to use Edge Runtime
+// export const runtime = 'edge'
 
 app.frame('/', (c) => {
   const { buttonValue, inputText, status } = c
@@ -61,3 +67,6 @@ app.frame('/', (c) => {
 })
 
 devtools(app, { serveStatic })
+
+export const GET = handle(app)
+export const POST = handle(app)
