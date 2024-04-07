@@ -6,6 +6,7 @@ import { devtools } from 'frog/dev'
 import { pinata } from 'frog/hubs'
 import { handle } from 'frog/next'
 import { serveStatic } from 'frog/serve-static'
+import { sql } from '@vercel/postgres';
 
 const app = new Frog({
   assetsPath: '/',
@@ -29,22 +30,83 @@ app.frame('/', (c) => {
   })
 })
 
-app.frame('/hattip', (c) => {
+app.frame('/hattip', async (c) => {
+  console.log('here')
   const { verified, frameData } = c
 
   if (!verified) {
-    return ReturnUnverified(c)
+    return ReturnUnverified(c, "Please login to Farcaster")
   }
 
   const { fid } = frameData || {}
-  console.log(fid)
-  console.log(frameData)
+  
+  if (!fid) {
+    return ReturnUnverified(c, "Unable to resolve FID . . .")
+  }
+
+  const day = new Date();
+  const currentDate = new Date(Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate()))
+
+  console.log('Checking hat tips...')
+  const resp = await getHatTips(fid)
+  let tipCount = 1;
+  if (resp.rowCount <= 0) {
+    console.log('no tips, making some')
+    const insertResp = await insertNewFid(fid)
+  } else {
+    tipCount = resp.rows[0].hattips
+
+    const lastTip = new Date(Date.UTC(resp.rows[0].lasttipyear, resp.rows[0].lasttipmonth, resp.rows[0].lasttipday))
+    
+    const ticksInDay = 24 * 60 * 60 * 1000;
+    if (lastTip.getTime() + ticksInDay <= currentDate.getTime()) {
+      // can tip
+      
+      tipCount++
+      updateHatTips(fid)
+    } else {
+      // cannot tip
+      console.log('already tipped today')
+    }
+  }
+
+  console.log('tip count ' + tipCount)
+
   return c.res({
-    image: `${process.env.NEXT_PUBLIC_SITE_URL}/images/banner.jpg`,
+    image: `${process.env.NEXT_PUBLIC_SITE_URL}/images/hat_logo_text.jpg`,
+    imageAspectRatio: "1:1",
   })
 })
 
-function ReturnUnverified(c: any) {
+async function getHatTips(fid: number) {
+  const fidString = fid.toString()
+  const resp = await sql`
+  SELECT hattippers.fid, hattippers.hattips, hattippers.lasttipyear, hattippers.lasttipmonth, hattippers.lasttipday
+  FROM hattippers
+  WHERE fid = ${fidString};`
+  return resp
+}
+
+async function insertNewFid(fid: number) {
+  const fidString = fid.toString()
+
+  const day = new Date();
+  await sql`
+  INSERT INTO hattippers (fid, hattips, lasttipyear, lasttipmonth, lasttipday)
+  VALUES (${fidString}, ${1}, ${day.getUTCFullYear()}, ${day.getUTCMonth()}, ${day.getUTCDate()});`;
+} 
+
+async function updateHatTips(fid: number) {
+  const fidString = fid.toString()
+  const day = new Date()
+
+  await sql`
+  UPDATE hattippers
+  SET hattips = hattips + 1, lasttipyear = ${day.getUTCFullYear()}, lasttipmonth = ${day.getUTCMonth()}, lasttipday = ${day.getUTCDate()}
+  WHERE fid = ${fidString};`
+}
+
+function ReturnUnverified(c: any, message: string) {
   return c.res({
     image: (
       <div
@@ -72,7 +134,7 @@ function ReturnUnverified(c: any) {
             padding: '0 120px',
             whiteSpace: 'pre-wrap',
           }}
-        > Please login to Farcaster!
+        > `${message}`
         </div>
       </div>
     ),
