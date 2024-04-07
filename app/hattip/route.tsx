@@ -10,9 +10,7 @@ export async function GET(request: Request) {
     const hasTips = searchParams.has('hattips')
     const tips = hasTips ? searchParams.get('hattips') : ""
 
-    console.log(request.url)
-    const hasTippedToday = searchParams.has('tippedToday')
-    const tippedToday = searchParams.get('tippedToday')
+    const alreadyTippedToday = searchParams.get('amp;alreadyTippedToday')
 
     const imageData = await fetch(
         new URL('./hat_logo_text.jpg', import.meta.url)
@@ -22,13 +20,9 @@ export async function GET(request: Request) {
     if (tips == "1") {
         responseMessage = "Your first hat tip!  Come back tomorrow for more."
     } else {
-        console.log(tippedToday)
-        if (tippedToday == "false") {
-            console.log('already tipped')
+        if (alreadyTippedToday == "true") {
             responseMessage = `You have already tipped your hat today.\nTotal hat tips: ${tips}\nCome back tomorrow for more`
-            
         } else {
-            console.log('new tip!')
             responseMessage = `Hat tipped!\nTotal hat tips: ${tips}\nCome back tomorrow for more`
         }
     }

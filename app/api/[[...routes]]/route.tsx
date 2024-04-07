@@ -49,7 +49,7 @@ app.frame('/hattip', async (c) => {
   console.log(`Checking hat tips for fid ${fid}...`)
   const resp = await getHatTips(fid)
   let tipCount = 1;
-  let tippedToday = false
+  let alreadyTippedToday = false
   if (resp.rowCount <= 0) {
     console.log('no tips, making some')
     const insertResp = await insertNewFid(fid)
@@ -65,7 +65,7 @@ app.frame('/hattip', async (c) => {
       updateHatTips(fid)
       
     } else {
-      tippedToday = true
+      alreadyTippedToday = true
       // cannot tip
       console.log('already tipped today')
     }
@@ -75,7 +75,7 @@ app.frame('/hattip', async (c) => {
 
   const newSearchParams = new URLSearchParams({
     hattips: tipCount.toString(),
-    tippedToday: tippedToday.toString()
+    alreadyTippedToday: alreadyTippedToday.toString()
   })
 
   return c.res({
