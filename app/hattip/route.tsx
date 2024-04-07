@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 
     console.log('url ' + request.url)
 
-    let alreadyTippedToday = searchParams.toString().includes('true')
+    let alreadyTippedToday = request.url.toString().includes('true')
     // if (!alreadyTippedToday) {
     //     alreadyTippedToday = searchParams.get('amp;alreadyTippedToday')
     // }
