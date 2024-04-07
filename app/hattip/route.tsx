@@ -10,11 +10,13 @@ export async function GET(request: Request) {
     const hasTips = searchParams.has('hattips')
     const tips = hasTips ? searchParams.get('hattips') : ""
 
+    console.log('url ' + request.url)
+
     let alreadyTippedToday = searchParams.get('amp;alreadyTippedToday')
     if (!alreadyTippedToday) {
         alreadyTippedToday = searchParams.get('alreadyTippedToday')
     }
-    console.log(alreadyTippedToday)
+    console.log('alreadytipped: ' + alreadyTippedToday)
 
     const imageData = await fetch(
         new URL('./hat_logo_text.jpg', import.meta.url)
