@@ -52,7 +52,6 @@ app.frame('/hattip', async (c) => {
   let tipCount = 1;
   let tippedToday = false
   if (resp.rowCount <= 0) {
-    tippedToday = true
     console.log('no tips, making some')
     const insertResp = await insertNewFid(fid)
   } else {
@@ -63,12 +62,11 @@ app.frame('/hattip', async (c) => {
     const ticksInDay = 24 * 60 * 60 * 1000;
     if (lastTip.getTime() + ticksInDay <= currentDate.getTime()) {
       // can tip
-      tippedToday = true
       tipCount++
       updateHatTips(fid)
       
     } else {
-      
+      tippedToday = true
       // cannot tip
       console.log('already tipped today')
     }
