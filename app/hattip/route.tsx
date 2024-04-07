@@ -10,6 +10,7 @@ export async function GET(request: Request) {
     const hasTips = searchParams.has('hattips')
     const tips = hasTips ? searchParams.get('hattips') : ""
 
+    console.log(request.url)
     const hasTippedToday = searchParams.has('tippedToday')
     const tippedToday = searchParams.get('tippedToday')
 
