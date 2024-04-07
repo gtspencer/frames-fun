@@ -50,7 +50,9 @@ app.frame('/hattip', async (c) => {
   console.log('Checking hat tips...')
   const resp = await getHatTips(fid)
   let tipCount = 1;
+  let tippedToday = false
   if (resp.rowCount <= 0) {
+    tippedToday = true
     console.log('no tips, making some')
     const insertResp = await insertNewFid(fid)
   } else {
@@ -61,10 +63,12 @@ app.frame('/hattip', async (c) => {
     const ticksInDay = 24 * 60 * 60 * 1000;
     if (lastTip.getTime() + ticksInDay <= currentDate.getTime()) {
       // can tip
-      
+      tippedToday = true
       tipCount++
       updateHatTips(fid)
+      
     } else {
+      
       // cannot tip
       console.log('already tipped today')
     }
@@ -72,10 +76,20 @@ app.frame('/hattip', async (c) => {
 
   console.log('tip count ' + tipCount)
 
-  return c.res({
-    image: `${process.env.NEXT_PUBLIC_SITE_URL}/images/hat_logo_text.jpg`,
-    imageAspectRatio: "1:1",
+  const newSearchParams = new URLSearchParams({
+    hattips: tipCount.toString(),
+    tippedToday: tippedToday.toString()
   })
+
+  return c.res({
+      image: `${process.env.NEXT_PUBLIC_SITE_URL}/hattip?${newSearchParams}`,
+      imageAspectRatio: "1:1",
+    })
+
+  // return c.res({
+  //   image: `${process.env.NEXT_PUBLIC_SITE_URL}/images/hat_logo_text.jpg`,
+  //   imageAspectRatio: "1:1",
+  // })
 })
 
 async function getHatTips(fid: number) {
