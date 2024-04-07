@@ -21,7 +21,7 @@ const app = new Frog({
 app.frame('/', (c) => {
   return c.res({
     action: '/hattip',
-    image: `/images/hat_logo.jpg`,
+    image: `${process.env.NEXT_PUBLIC_SITE_URL}/images/hat_logo.jpg`,
     imageAspectRatio: "1:1",
     intents: [
       <Button>Tip your hat</Button>,
@@ -40,7 +40,7 @@ app.frame('/hattip', (c) => {
   console.log(fid)
   console.log(frameData)
   return c.res({
-    image: `/images/banner.jpg`,
+    image: `${process.env.NEXT_PUBLIC_SITE_URL}/images/banner.jpg`,
   })
 })
 
