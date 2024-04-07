@@ -31,7 +31,6 @@ app.frame('/', (c) => {
 })
 
 app.frame('/hattip', async (c) => {
-  console.log('here')
   const { verified, frameData } = c
 
   if (!verified) {
@@ -47,7 +46,7 @@ app.frame('/hattip', async (c) => {
   const day = new Date();
   const currentDate = new Date(Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate()))
 
-  console.log('Checking hat tips...')
+  console.log(`Checking hat tips for fid ${fid}...`)
   const resp = await getHatTips(fid)
   let tipCount = 1;
   let tippedToday = false
