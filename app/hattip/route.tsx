@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     if (tips == "1") {
         responseMessage = "Your first hat tip!  Come back tomorrow for more."
     } else {
-        if (alreadyTippedToday == "true") {
+        if (alreadyTippedToday == "true" || alreadyTippedToday === "true") {
             responseMessage = `You have already tipped your hat today.\nTotal hat tips: ${tips}\nCome back tomorrow for more`
         } else {
             responseMessage = `Hat tipped!\nTotal hat tips: ${tips}\nCome back tomorrow for more`
