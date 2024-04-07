@@ -10,8 +10,8 @@ export async function GET(request: Request) {
     const hasTips = searchParams.has('hattips')
     const tips = hasTips ? searchParams.get('hattips') : ""
 
-    const hasTippedToday = searchParams.has('amp;tippedToday')
-    const tippedToday = searchParams.get('amp;tippedToday')
+    const hasTippedToday = searchParams.has('tippedToday')
+    const tippedToday = searchParams.get('tippedToday')
 
     const imageData = await fetch(
         new URL('./hat_logo_text.jpg', import.meta.url)
