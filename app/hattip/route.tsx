@@ -60,7 +60,7 @@ export async function GET(request: Request) {
     ).then((res) => res.arrayBuffer())
 
     let responseMessage = ""
-    if (tips == "1") {
+    if (tips == "1" && !(alreadyTippedToday == 'true' || alreadyTippedToday === 'true')) {
         responseMessage = "Your first hat tip!  Come back tomorrow for more."
     } else {
         if (alreadyTippedToday == 'true' || alreadyTippedToday === 'true') {
