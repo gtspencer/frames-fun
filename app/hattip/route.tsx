@@ -14,7 +14,15 @@ export async function GET(request: Request) {
     const tips = hasTips ? searchParams.get('hattips') : ""
 
     const hasAlreadyTippedToday = searchParams.has('alreadyTippedToday')
-    const alreadyTippedToday = hasAlreadyTippedToday ? searchParams.get('alreadyTippedToday') : ""
+    let alreadyTippedToday = searchParams.get('alreadyTippedToday')
+
+    if (!alreadyTippedToday) {
+        alreadyTippedToday = searchParams.get('amp%3BalreadyTippedToday')
+    }
+
+    if (!alreadyTippedToday) {
+        alreadyTippedToday = searchParams.get('amp;alreadyTippedToday')
+    }
 
     console.log('tips ' + tips)
     console.log('has tipped already ' + alreadyTippedToday)
