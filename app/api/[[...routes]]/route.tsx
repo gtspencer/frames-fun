@@ -81,7 +81,7 @@ app.frame('/hattip', async (c) => {
   console.log('sending to url: ' + `${process.env.NEXT_PUBLIC_SITE_URL}/hattip?${newSearchParams}`)
 
   return c.res({
-      image: `${process.env.NEXT_PUBLIC_SITE_URL}/hattip?${newSearchParams}`,
+      image: `${process.env.NEXT_PUBLIC_SITE_URL}hattip?${newSearchParams}`,
       // image: `${process.env.NEXT_PUBLIC_SITE_URL}/hattip?hattips=${tipCount.toString()}also${alreadyTippedToday.toString()}`,
       imageAspectRatio: "1:1",
     })
